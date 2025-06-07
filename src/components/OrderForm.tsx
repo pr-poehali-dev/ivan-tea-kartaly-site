@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import PaymentProcessor from "@/components/PaymentProcessor";
+import Icon from "@/components/ui/icon";
 
 const OrderForm = () => {
+  const [currentStep, setCurrentStep] = useState<
+    "form" | "payment" | "success"
+  >("form");
+  const [orderTotal] = useState(2500); // Примерная сумма заказа
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -10,12 +16,6 @@ const OrderForm = () => {
     address: "",
     paymentMethod: "card",
   });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Здесь будет логика отправки заказа
-    alert("Заказ отправлен! Мы свяжемся с вами в ближайшее время 😊");
-  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -26,20 +26,74 @@ const OrderForm = () => {
     });
   };
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentStep("payment");
+  };
+
+  const handlePaymentSuccess = () => {
+    setCurrentStep("success");
+  };
+
+  const handlePaymentCancel = () => {
+    setCurrentStep("form");
+  };
+
+  if (currentStep === "success") {
+    return (
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-2xl">
+          <Card className="bg-black/60 border-green-400/30">
+            <CardContent className="text-center py-12">
+              <div className="text-6xl mb-4">😊</div>
+              <h2 className="text-white text-2xl font-bold mb-4">
+                Заказ успешно оплачен!
+              </h2>
+              <p className="text-white/70 mb-6">
+                Мы получили ваш платеж и начинаем подготовку заказа. В ближайшее
+                время с вами свяжется наш менеджер.
+              </p>
+              <Button
+                onClick={() => setCurrentStep("form")}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                Оформить новый заказ
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    );
+  }
+
+  if (currentStep === "payment") {
+    return (
+      <section className="py-16 px-4">
+        <div className="container mx-auto max-w-2xl">
+          <PaymentProcessor
+            amount={orderTotal}
+            onSuccess={handlePaymentSuccess}
+            onCancel={handlePaymentCancel}
+          />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 px-4">
       <div className="container mx-auto max-w-2xl">
         <Card className="bg-black/60 border-red-800/30">
           <CardHeader>
             <CardTitle className="text-white text-center flex items-center justify-center gap-2">
-              <span className="text-green-400">😊</span>
+              <Icon name="ShoppingCart" className="text-green-400" size={24} />
               Оформить заказ
               <span className="text-green-400">😊</span>
             </CardTitle>
           </CardHeader>
 
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleFormSubmit} className="space-y-6">
               <div>
                 <label className="block text-white mb-2">Имя</label>
                 <input
@@ -88,25 +142,12 @@ const OrderForm = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-white mb-2">Способ оплаты</label>
-                <select
-                  name="paymentMethod"
-                  value={formData.paymentMethod}
-                  onChange={handleChange}
-                  className="w-full p-3 bg-black/40 border border-red-800/30 rounded-md text-white focus:border-green-400 focus:outline-none"
-                >
-                  <option value="card">Банковская карта</option>
-                  <option value="cash">Наличные при получении</option>
-                  <option value="transfer">Банковский перевод</option>
-                </select>
-              </div>
-
               <Button
                 type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 text-lg flex items-center justify-center gap-2"
               >
-                Оформить заказ 😊
+                <Icon name="CreditCard" size={20} />
+                Перейти к оплате • {orderTotal.toLocaleString()} ₽
               </Button>
             </form>
           </CardContent>
