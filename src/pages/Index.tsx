@@ -1,13 +1,32 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import TimeGate from "@/components/TimeGate";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import ProductCatalog from "@/components/ProductCatalog";
+import OrderForm from "@/components/OrderForm";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4 color-black text-black">Добро пожаловать!</h1>
-        <p className="text-xl text-gray-600">тут будет отображаться ваш проект</p>
+    <TimeGate>
+      <div className="min-h-screen bg-gradient-to-br from-black via-red-950 to-black">
+        <Header />
+        <Hero />
+        <ProductCatalog />
+        <OrderForm />
+
+        <footer className="bg-black/80 border-t border-red-800/30 py-8">
+          <div className="container mx-auto px-4 text-center">
+            <div className="flex items-center justify-center mb-4">
+              <span className="text-green-400 text-2xl mr-2">😊</span>
+              <span className="text-white text-xl font-bold">Kartaly</span>
+              <span className="text-green-400 text-2xl ml-2">😊</span>
+            </div>
+            <p className="text-white/60">
+              Премиальный Иван-чай • Работаем 1-7 числа каждого месяца
+            </p>
+          </div>
+        </footer>
       </div>
-    </div>
+    </TimeGate>
   );
 };
 
